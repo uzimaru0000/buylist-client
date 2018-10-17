@@ -6,12 +6,11 @@ import 'firebase/auth'
 
 export default () => {
     let flag = false;
-    let app;
     return x => {
         console.log(x);
         if (!flag) {
             const main = document.getElementById('main');
-            app = Elm.Main.init({
+            const app = Elm.Main.init({
                 node: main,
                 flags: x
             });
@@ -61,4 +60,6 @@ const appPorting = app => {
                 console.log(app);
             });
     });
+
+    app.ports.alert.subscribe(msg => alert(msg));
 }

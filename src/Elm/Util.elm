@@ -1,4 +1,4 @@
-module Util exposing (..)
+port module Util exposing (..)
 
 import Json.Decode as Decode exposing (Decoder)
 
@@ -9,6 +9,10 @@ type alias UniqueData a =
     }
 
 
+type alias Updater a b
+    = a -> b -> (b, Cmd a)
+
+
 uniqueDataDecoder : Decoder a -> Decoder (UniqueData a)
 uniqueDataDecoder decoder =
     Decode.map2 UniqueData
@@ -16,5 +20,4 @@ uniqueDataDecoder decoder =
         (Decode.field "asset" decoder)
 
 
-type alias Updater a b
-    = a -> b -> (b, Cmd a)
+port alert : String -> Cmd msg

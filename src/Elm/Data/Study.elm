@@ -5,7 +5,7 @@ import Http exposing (..)
 
 type Mode
     = Public
-    | Private
+    | Private String
 
 
 request : Mode -> Request String
@@ -14,5 +14,13 @@ request mode =
         Public ->
             getString "http://localhost:5000/public"
 
-        Private ->
-            getString "http://localhost:5000/private"
+        Private jwt ->
+            Http.request
+                { method = "GET"
+                , headers = [ header "Authorization" <| String.join " " [ "Bearer", jwt ] ]
+                , url = "http://localhost:5000/private"
+                , body = emptyBody
+                , expect = expectString
+                , timeout = Nothing
+                , withCredentials = False
+                }

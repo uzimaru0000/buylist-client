@@ -15,5 +15,4 @@ const config = {
 };
 firebase.initializeApp(config);
 
-
 firebase.auth().onAuthStateChanged(init());

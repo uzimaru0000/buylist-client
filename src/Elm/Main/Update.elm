@@ -12,7 +12,7 @@ import SignIn.Update as SignIn
 import SignUp.Model as SignUp
 import SignUp.Update as SignUp
 import Url
-import Util exposing (Updater)
+import Util exposing (Updater, alert)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -55,6 +55,9 @@ update msg model =
             ( { model | pageState = state }
             , Cmd.none
             )
+
+        GetData (Err (Http.BadStatus res)) ->
+            ( model, alert res.body )
 
         SignOut ->
             ( model, Firebase.signOut () )
@@ -113,7 +116,14 @@ pageInit model route =
             ( Loaded <| SignIn SignIn.init, Cmd.none )
 
         Routing.Private ->
-            ( Transition <| Private "", Http.send GetData (Study.request Study.Private) )
+            ( Transition <| Private ""
+            , model.user
+                |> Maybe.map .jwt
+                |> Maybe.withDefault ""
+                |> Study.Private
+                |> Study.request
+                |> Http.send GetData
+            )
 
         Routing.Public ->
             ( Transition <| Public "", Http.send GetData (Study.request Study.Public) )
