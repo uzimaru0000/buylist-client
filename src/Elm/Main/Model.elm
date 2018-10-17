@@ -2,19 +2,22 @@ module Main.Model exposing (Model, Msg(..), Page(..), PageState(..), getPage, in
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation exposing (Key)
+import Data.User as User exposing (User)
 import Firebase
 import Http exposing (Error)
+import Json.Decode as Decode
 import Result exposing (Result)
 import SignIn.Model as SignIn
 import SignUp.Model as SignUp
 import Url exposing (Url)
 import Url.Parser as Url exposing (Parser)
+import Util exposing (..)
 
 
 type alias Model =
     { key : Key
     , pageState : PageState
-    , msg : String
+    , user : Maybe User
     }
 
 
@@ -23,6 +26,9 @@ type Msg
     | UrlRequest UrlRequest
     | UrlChanged Url
     | GetData (Result Error String)
+    | SignOut
+    | GetUser User
+    | SuccessSignOut ()
     | SignInMsg SignIn.Msg
     | SignUpMsg SignUp.Msg
 
@@ -41,11 +47,17 @@ type PageState
     | Transition Page
 
 
-init : () -> Url -> Key -> ( Model, Cmd Msg )
-init _ url key =
+init : Decode.Value -> Url -> Key -> ( Model, Cmd Msg )
+init value url key =
+    let
+        user =
+            Decode.decodeValue (Decode.nullable User.decoder) value
+                |> Result.toMaybe
+                |> Maybe.withDefault Nothing
+    in
     ( { key = key
-      , msg = ""
       , pageState = Loaded Home
+      , user = user
       }
     , Cmd.none
     )

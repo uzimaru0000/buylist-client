@@ -1,16 +1,16 @@
-module Data.User exposing (User, userDecoder)
+module Data.User exposing (User, decoder)
 
 import Json.Decode as Decode exposing (Decoder)
 
 
 type alias User =
-    { name : String
+    { uid : String
     , email : String
     }
 
 
-userDecoder : Decoder User
-userDecoder =
+decoder : Decoder User
+decoder =
     Decode.map2 User
-        (Decode.field "name" Decode.string)
+        (Decode.field "uid" Decode.string)
         (Decode.field "email" Decode.string)

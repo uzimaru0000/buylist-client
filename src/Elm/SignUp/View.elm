@@ -1,15 +1,15 @@
-module SignUp.View exposing (..)
+module SignUp.View exposing (view)
 
-import SignUp.Model exposing (..)
 import Html exposing (..)
 import Html.Attributes exposing (..)
 import Html.Events exposing (..)
+import SignUp.Model exposing (..)
 
 
 view : Model -> Html Msg
 view model =
     div []
-        [ h1 [] [ text "SignIn" ]
+        [ h1 [] [ text "SignUp" ]
         , div []
             [ input
                 [ placeholder "Email"

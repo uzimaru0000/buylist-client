@@ -3,6 +3,7 @@ module Main.View exposing (view)
 import Browser exposing (Document)
 import Html exposing (..)
 import Html.Attributes exposing (..)
+import Html.Events exposing (..)
 import Main.Model exposing (..)
 import SignIn.View as SignIn
 import SignUp.View as SignUp
@@ -15,8 +16,21 @@ view model =
             { title = "Home"
             , body =
                 [ h1 [] [ text "Home" ]
-                , div [] [ a [ href "/signin" ] [ text "SignIn" ] ]
-                , div [] [ a [ href "/signup"] [ text "SignUp" ] ]
+                , if model.user /= Nothing then
+                    div [] [ button [ onClick SignOut ] [ text "SignOut" ] ]
+
+                  else
+                    text ""
+                , if model.user == Nothing then
+                    div [] [ a [ href "/signup" ] [ text "SignUp" ] ]
+
+                  else
+                    text ""
+                , if model.user == Nothing then
+                    div [] [ a [ href "/signin" ] [ text "SignIn" ] ]
+
+                  else
+                    text ""
                 , div [] [ a [ href "/public" ] [ text "public" ] ]
                 , div [] [ a [ href "/private" ] [ text "private" ] ]
                 ]

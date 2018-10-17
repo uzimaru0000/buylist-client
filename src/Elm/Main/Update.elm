@@ -3,15 +3,16 @@ module Main.Update exposing (update)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
 import Data.Study as Study
+import Firebase
 import Http
 import Main.Model exposing (..)
 import Routing exposing (Route)
-import Url
-import Util exposing (Updater)
 import SignIn.Model as SignIn
 import SignIn.Update as SignIn
 import SignUp.Model as SignUp
 import SignUp.Update as SignUp
+import Url
+import Util exposing (Updater)
 
 
 update : Msg -> Model -> ( Model, Cmd Msg )
@@ -34,9 +35,9 @@ update msg model =
                 ( state, cmd ) =
                     pageInit model <| Routing.parseUrl url
             in
-                ( { model | pageState = state }
-                , cmd
-                )
+            ( { model | pageState = state }
+            , cmd
+            )
 
         GetData (Ok res) ->
             let
@@ -51,9 +52,18 @@ update msg model =
                         _ ->
                             Loaded Home
             in
-                ( { model | pageState = state }
-                , Cmd.none
-                )
+            ( { model | pageState = state }
+            , Cmd.none
+            )
+
+        SignOut ->
+            ( model, Firebase.signOut () )
+
+        GetUser user ->
+            ( { model | user = Just user }, Nav.pushUrl model.key "/" )
+
+        SuccessSignOut _ ->
+            ( { model | user = Nothing }, Nav.pushUrl model.key "/signin" )
 
         _ ->
             pageUpdate (getPage model.pageState) msg model
@@ -64,7 +74,7 @@ pageUpdate page msg model =
     case ( msg, page ) of
         ( SignInMsg subMsg, SignIn subModel ) ->
             pageUpdater model SignIn SignInMsg subMsg subModel SignIn.update
-        
+
         ( SignUpMsg subMsg, SignUp subModel ) ->
             pageUpdater model SignUp SignUpMsg subMsg subModel SignUp.update
 
@@ -73,21 +83,21 @@ pageUpdate page msg model =
 
 
 pageUpdater :
-    Model ->
-    (subModel -> Page) -> 
-    (subMsg -> Msg) -> 
-    subMsg -> 
-    subModel -> 
-    Updater subMsg subModel ->
-    (Model, Cmd Msg)
+    Model
+    -> (subModel -> Page)
+    -> (subMsg -> Msg)
+    -> subMsg
+    -> subModel
+    -> Updater subMsg subModel
+    -> ( Model, Cmd Msg )
 pageUpdater model page msg subMsg subModel updater =
     let
-        ( newModel, newCmd) =
+        ( newModel, newCmd ) =
             updater subMsg subModel
     in
-        ( { model | pageState = Loaded <| page newModel }
-        , Cmd.map msg newCmd
-        )
+    ( { model | pageState = Loaded <| page newModel }
+    , Cmd.map msg newCmd
+    )
 
 
 pageInit : Model -> Route -> ( PageState, Cmd Msg )
@@ -96,11 +106,11 @@ pageInit model route =
         Routing.Home ->
             ( Loaded Home, Cmd.none )
 
-        Routing.SignIn ->
-            ( Loaded <| SignIn <| SignIn.init model.key, Cmd.none )
-
         Routing.SignUp ->
-            ( Loaded <| SignUp SignUp.init, Cmd.none )
+            ( Loaded <| SignUp <| SignUp.init model.key, Cmd.none )
+
+        Routing.SignIn ->
+            ( Loaded <| SignIn SignIn.init, Cmd.none )
 
         Routing.Private ->
             ( Transition <| Private "", Http.send GetData (Study.request Study.Private) )
