@@ -3,8 +3,10 @@ module Main.Update exposing (update)
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
 import Data.Study as Study
+import Data.User as User
 import Firebase
 import Http
+import Json.Decode as Decode
 import Main.Model exposing (..)
 import Routing exposing (Route)
 import SignIn.Model as SignIn
@@ -62,8 +64,14 @@ update msg model =
         SignOut ->
             ( model, Firebase.signOut () )
 
-        GetUser user ->
-            ( { model | user = Just user }, Nav.pushUrl model.key "/" )
+        GetUser value ->
+            let
+                user =
+                    value
+                        |> Decode.decodeValue User.decoder
+                        |> Result.toMaybe
+            in
+            ( { model | user = user }, Nav.pushUrl model.key "/" )
 
         SuccessSignOut _ ->
             ( { model | user = Nothing }, Nav.pushUrl model.key "/signin" )

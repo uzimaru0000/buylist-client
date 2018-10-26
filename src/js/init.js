@@ -7,7 +7,6 @@ import 'firebase/auth'
 export default () => {
     let flag = false;
     return x => {
-        console.log(x);
         if (!flag) {
             const main = document.getElementById('main');
             const app = Elm.Main.init({
@@ -43,7 +42,6 @@ const appPorting = app => {
         firebase.auth().signInWithEmailAndPassword(email, pass)
             .then(res => {
                 app.ports.getUser.send(res.user);
-                localStorage.setItem('jwt', res.user.qa);
             })
             .catch(err => {
                 app.ports.message.send("Error");
@@ -54,7 +52,6 @@ const appPorting = app => {
     app.ports.signOut.subscribe(data => {
         firebase.auth().signOut()
             .then(() => {
-                localStorage.removeItem('jwt');
                 console.log("signOut");
                 app.ports.successSignOut.send(null);
                 console.log(app);

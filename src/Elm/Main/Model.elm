@@ -27,7 +27,7 @@ type Msg
     | UrlChanged Url
     | GetData (Result Error String)
     | SignOut
-    | GetUser User
+    | GetUser Decode.Value
     | SuccessSignOut ()
     | SignInMsg SignIn.Msg
     | SignUpMsg SignUp.Msg

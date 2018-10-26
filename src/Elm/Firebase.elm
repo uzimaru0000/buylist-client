@@ -16,7 +16,7 @@ port signOut : () -> Cmd msg
 port message : (Decode.Value -> msg) -> Sub msg
 
 
-port getUser : (User -> msg) -> Sub msg
+port getUser : (Decode.Value -> msg) -> Sub msg
 
 
 port successSignOut : (() -> msg) -> Sub msg

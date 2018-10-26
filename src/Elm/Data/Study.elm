@@ -12,13 +12,13 @@ request : Mode -> Request String
 request mode =
     case mode of
         Public ->
-            getString "http://localhost:5000/public"
+            getString "http://localhost:5000/api/v1/public"
 
         Private jwt ->
             Http.request
                 { method = "GET"
                 , headers = [ header "Authorization" <| String.join " " [ "Bearer", jwt ] ]
-                , url = "http://localhost:5000/private"
+                , url = "http://localhost:5000/api/v1/private"
                 , body = emptyBody
                 , expect = expectString
                 , timeout = Nothing
