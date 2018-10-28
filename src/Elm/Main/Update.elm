@@ -2,7 +2,6 @@ module Main.Update exposing (update)
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
-import Data.Study as Study
 import Data.User as User
 import Firebase
 import Http
@@ -40,26 +39,6 @@ update msg model =
             ( { model | pageState = state }
             , cmd
             )
-
-        GetData (Ok res) ->
-            let
-                state =
-                    case getPage model.pageState of
-                        Public _ ->
-                            Loaded <| Public res
-
-                        Private _ ->
-                            Loaded <| Private res
-
-                        _ ->
-                            Loaded Home
-            in
-            ( { model | pageState = state }
-            , Cmd.none
-            )
-
-        GetData (Err (Http.BadStatus res)) ->
-            ( model, alert res.body )
 
         SignOut ->
             ( model, Firebase.signOut () )
@@ -122,19 +101,6 @@ pageInit model route =
 
         Routing.SignIn ->
             ( Loaded <| SignIn SignIn.init, Cmd.none )
-
-        Routing.Private ->
-            ( Transition <| Private ""
-            , model.user
-                |> Maybe.map .jwt
-                |> Maybe.withDefault ""
-                |> Study.Private
-                |> Study.request
-                |> Http.send GetData
-            )
-
-        Routing.Public ->
-            ( Transition <| Public "", Http.send GetData (Study.request Study.Public) )
 
         Routing.NotFound ->
             ( Loaded NotFound, Cmd.none )

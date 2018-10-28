@@ -25,7 +25,6 @@ type Msg
     = NoOp
     | UrlRequest UrlRequest
     | UrlChanged Url
-    | GetData (Result Error String)
     | SignOut
     | GetUser Decode.Value
     | SuccessSignOut ()
@@ -37,8 +36,6 @@ type Page
     = Home
     | SignUp SignUp.Model
     | SignIn SignIn.Model
-    | Private String
-    | Public String
     | NotFound
 
 

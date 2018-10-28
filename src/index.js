@@ -1,6 +1,8 @@
 'use struct'
 
 import './index.html'
+import './style.scss'
+import '../assets/Logo/facebook_cover_photo_2.png'
 import init from './js/init'
 import firebase from 'firebase/app'
 import 'firebase/auth'

@@ -8,17 +8,13 @@ type Route
     = Home
     | SignUp
     | SignIn
-    | Private
-    | Public
     | NotFound
 
 
 routing : Parser (Route -> a) a
 routing =
     Url.oneOf
-        [ Url.map Private (Url.s "private")
-        , Url.map Public (Url.s "public")
-        , Url.map SignUp (Url.s "signup")
+        [ Url.map SignUp (Url.s "signup")
         , Url.map SignIn (Url.s "signin")
         , Url.map Home Url.top
         ]

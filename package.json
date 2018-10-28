@@ -15,12 +15,16 @@
     "elm-test": "^0.18.13-beta3",
     "elm-webpack-loader": "^5.0.0",
     "file-loader": "^1.1.6",
+    "mini-css-extract-plugin": "^0.4.4",
+    "node-sass": "^4.9.4",
+    "sass-loader": "^7.1.0",
     "style-loader": "^0.19.1",
     "webpack": "^4.20.2",
     "webpack-cli": "^3.1.2",
     "webpack-dev-server": "^3.1.9"
   },
   "dependencies": {
+    "bulma": "^0.7.2",
     "firebase": "^5.5.4"
   }
 }

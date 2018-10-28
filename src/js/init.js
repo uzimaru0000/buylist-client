@@ -57,6 +57,4 @@ const appPorting = app => {
                 console.log(app);
             });
     });
-
-    app.ports.alert.subscribe(msg => alert(msg));
 }
