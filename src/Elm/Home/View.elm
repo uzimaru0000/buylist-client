@@ -37,21 +37,26 @@ homeHero =
                         ]
                     )
                     [ B.navbarItemLink False
-                        []
+                        [ href "/" ]
                         [ text "Pantry" ]
                     ]
-                , B.navbarMenu True
+                , B.navbarMenu False
                     []
                     [ B.navbarEnd []
                         [ B.navbarItem False
                             []
                             [ B.buttons Left
                                 []
-                                [ B.button { buttonModifiers | color = Link }
-                                    [ BT.textColor BT.Grey ]
+                                [ a
+                                    [ BT.textColor BT.Grey
+                                    , class "button is-warning"
+                                    , href "/signup"
+                                    ]
                                     [ text "SignUp" ]
-                                , B.button { buttonModifiers | color = Primary }
-                                    []
+                                , a
+                                    [ class "button is-primary"
+                                    , href "/signin"
+                                    ]
                                     [ text "SignIn" ]
                                 ]
                             ]
@@ -99,16 +104,21 @@ homeFooter =
                     []
                     [ B.column columnModifiers
                         []
-                        [ B.button { buttonModifiers | color = Link, size = Large }
+                        [ a
                             [ BT.textColor BT.Grey
                             , B.fullWidth
+                            , class "button is-warning is-large"
+                            , href "/signup"
                             ]
                             [ text "SignUp" ]
                         ]
                     , B.column columnModifiers
                         []
-                        [ B.button { buttonModifiers | color = Primary, size = Large }
-                            [ B.fullWidth ]
+                        [ a
+                            [ B.fullWidth
+                            , class "button is-primary is-large"
+                            , href "/signin"
+                            ]
                             [ text "SignIn" ]
                         ]
                     ]

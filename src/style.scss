@@ -2,7 +2,7 @@
 @import url('https://fonts.googleapis.com/css?family=M+PLUS+Rounded+1c:100,400,700&subset=japanese');
 
 $main-color: #C86F5E;
-$yellow-light: #FEFBB7;
+$yellow: #FEFBB7;
 $base-color: #fffbee;
 $grey-dark: #6c6c6c;
 $cream: #E8DE9A;
@@ -10,14 +10,13 @@ $orange: #F8A94A;
 $green: #80c85e;
 $cyan: #5ea5c8;
 $red: #c85e5e;
-$yellow: #c8c75e;
 
 $primary: $main-color;
 $info: $cyan;
 $success: $green;
 $warning: $yellow;
 $denger: $red;
-$link: $yellow-light;
+$link: $orange;
 
 $family-sans-serif: 'M PLUS Rounded 1c', sans-serif;
 
