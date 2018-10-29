@@ -15,7 +15,7 @@ $primary: $main-color;
 $info: $cyan;
 $success: $green;
 $warning: $yellow;
-$denger: $red;
+$danger: $red;
 $link: $orange;
 
 $family-sans-serif: 'M PLUS Rounded 1c', sans-serif;
@@ -23,3 +23,10 @@ $family-sans-serif: 'M PLUS Rounded 1c', sans-serif;
 $body-background-color: $base-color;
 
 @import "~bulma/bulma";
+
+.logo-icon {
+    border-radius: 50%;
+    background-color: $primary;
+    box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
+    margin: -85px auto 16px;
+}

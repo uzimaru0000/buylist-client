@@ -4,8 +4,9 @@ import Data.User exposing (User)
 
 
 type alias Model =
-    { email : Maybe String
-    , pass : Maybe String
+    { email : String
+    , pass : String
+    , signInFail : Maybe Bool
     }
 
 
@@ -13,10 +14,12 @@ type Msg
     = EmailInput String
     | PassInput String
     | SignIn
+    | SignInResult
 
 
 init : Model
 init =
-    { email = Nothing
-    , pass = Nothing
+    { email = ""
+    , pass = ""
+    , signInFail = Nothing
     }
