@@ -1,8 +1,8 @@
 port module Util exposing (UniqueData, Updater, alert, uniqueDataDecoder)
 
-import Bulma.Components as Bulma exposing (NavbarBurger, navbarModifiers)
-import Bulma.Elements as Bulma exposing (TitleSize(..))
-import Bulma.Modifiers as Bulma
+import Bulma.Components as B exposing (NavbarBurger, navbarModifiers)
+import Bulma.Elements as B exposing (TitleSize(..))
+import Bulma.Modifiers as B
 import Html exposing (..)
 import Html.Attributes exposing (src)
 import Json.Decode as Decode exposing (Decoder)

@@ -1,10 +1,10 @@
 module Main.View exposing (view)
 
 import Browser exposing (Document)
-import Bulma.Components as B
+import Bulma.Components as B exposing (IsActive, navbarModifiers)
 import Bulma.Elements as B exposing (buttonModifiers)
 import Bulma.Layout as B
-import Bulma.Modifiers exposing (..)
+import Bulma.Modifiers as B
 import Bulma.Modifiers.Typography as BT
 import Home.View as Home
 import Html exposing (..)
@@ -22,7 +22,26 @@ view model =
         Home ->
             { title = "Home"
             , body =
-                [ Home.view
+                [ generalNavbar False
+                    [ B.navbarItem False
+                        []
+                        [ B.buttons B.Left
+                            []
+                            [ a
+                                [ BT.textColor BT.BlackLighter
+                                , class "button is-warning"
+                                , href "/signup"
+                                ]
+                                [ text "SignUp" ]
+                            , a
+                                [ class "button is-primary"
+                                , href "/signin"
+                                ]
+                                [ text "SignIn" ]
+                            ]
+                        ]
+                    ]
+                , Home.view
                 , generalFooter
                 ]
             }
@@ -30,16 +49,20 @@ view model =
         SignIn subModel ->
             { title = "SignIn"
             , body =
-                [ SignIn.view subModel
+                [ generalNavbar False []
+                , SignIn.view subModel
                     |> Html.map SignInMsg
+                , generalFooter
                 ]
             }
 
         SignUp subModel ->
             { title = "SignUp"
             , body =
-                [ SignUp.view subModel
+                [ generalNavbar False []
+                , SignUp.view subModel
                     |> Html.map SignUpMsg
+                , generalFooter
                 ]
             }
 
@@ -47,6 +70,30 @@ view model =
             { title = "NotFound"
             , body = [ h1 [] [ text "NotFound" ] ]
             }
+
+
+generalNavbar : IsActive -> List (Html msg) -> Html msg
+generalNavbar isActive items =
+    B.navbar { navbarModifiers | color = B.Primary }
+        []
+        [ B.navbarBrand []
+            (B.navbarBurger isActive
+                []
+                [ span [] []
+                , span [] []
+                , span [] []
+                ]
+            )
+            [ B.navbarItemLink False
+                [ href "/" ]
+                [ text "Pantry" ]
+            ]
+        , B.navbarMenu isActive
+            []
+            [ B.navbarEnd []
+                items
+            ]
+        ]
 
 
 generalFooter : Html msg

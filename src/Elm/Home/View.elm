@@ -25,48 +25,11 @@ homeHero : Html msg
 homeHero =
     B.hero { color = B.Primary, size = B.Small, bold = False }
         []
-        [ B.heroHead []
-            [ B.navbar { navbarModifiers | color = B.Primary }
+        [ B.heroBody []
+            [ B.image B.Natural
                 []
-                [ B.navbarBrand []
-                    (B.navbarBurger False
-                        []
-                        [ span [] []
-                        , span [] []
-                        , span [] []
-                        ]
-                    )
-                    [ B.navbarItemLink False
-                        [ href "/" ]
-                        [ text "Pantry" ]
-                    ]
-                , B.navbarMenu False
-                    []
-                    [ B.navbarEnd []
-                        [ B.navbarItem False
-                            []
-                            [ B.buttons Left
-                                []
-                                [ a
-                                    [ BT.textColor BT.Grey
-                                    , class "button is-warning"
-                                    , href "/signup"
-                                    ]
-                                    [ text "SignUp" ]
-                                , a
-                                    [ class "button is-primary"
-                                    , href "/signin"
-                                    ]
-                                    [ text "SignIn" ]
-                                ]
-                            ]
-                        ]
-                    ]
-                ]
+                [ img [ src "assets/Logo/facebook_cover_photo_2.png" ] [] ]
             ]
-        , B.image B.Natural
-            []
-            [ img [ src "assets/Logo/facebook_cover_photo_2.png" ] [] ]
         ]
 
 
@@ -99,15 +62,14 @@ homeFooter =
     B.section B.NotSpaced
         []
         [ B.container []
-            [ B.box [ B.radiusless ]
+            [ B.box []
                 [ B.columns columnsModifiers
                     []
                     [ B.column columnModifiers
                         []
                         [ a
-                            [ BT.textColor BT.Grey
-                            , B.fullWidth
-                            , class "button is-warning is-large"
+                            [ B.fullWidth
+                            , class "button is-primary is-large"
                             , href "/signup"
                             ]
                             [ text "SignUp" ]
@@ -116,7 +78,8 @@ homeFooter =
                         []
                         [ a
                             [ B.fullWidth
-                            , class "button is-primary is-large"
+                            , BT.textColor BT.Primary
+                            , class "button is-large is-outlined"
                             , href "/signin"
                             ]
                             [ text "SignIn" ]
@@ -163,10 +126,10 @@ columnCardModifiers : B.ColumnModifiers
 columnCardModifiers =
     { columnModifiers
         | widths =
-            { mobile = Just Width4
-            , tablet = Just Width4
-            , desktop = Just Width4
-            , widescreen = Just Width4
-            , fullHD = Just Width4
+            { mobile = Just Auto
+            , tablet = Just Auto
+            , desktop = Just Auto
+            , widescreen = Just Auto
+            , fullHD = Just Auto
             }
     }
