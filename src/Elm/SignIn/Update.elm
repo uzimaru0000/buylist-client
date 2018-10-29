@@ -22,7 +22,7 @@ update msg model =
             , Firebase.signIn ( model.email, model.pass )
             )
 
-        SignInResult ->
-            ( { model | signInFail = Just True }
+        SignInResult err ->
+            ( { model | errorMessage = err, signInFail = Just True }
             , Cmd.none
             )

@@ -2,11 +2,11 @@ module Main.Model exposing (Model, Msg(..), Page(..), PageState(..), getPage, in
 
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation exposing (Key)
+import Bulma.Components exposing (IsActive)
 import Data.User as User exposing (User)
 import Firebase
 import Http exposing (Error)
 import Json.Decode as Decode
-import Result exposing (Result)
 import SignIn.Model as SignIn
 import SignUp.Model as SignUp
 import Url exposing (Url)
@@ -18,6 +18,7 @@ type alias Model =
     { key : Key
     , pageState : PageState
     , user : Maybe User
+    , isActive : IsActive
     }
 
 
@@ -25,6 +26,7 @@ type Msg
     = NoOp
     | UrlRequest UrlRequest
     | UrlChanged Url
+    | ToggleBurger
     | SignOut
     | GetUser Decode.Value
     | SuccessSignOut ()
@@ -55,6 +57,7 @@ init value url key =
     ( { key = key
       , pageState = Loaded Home
       , user = user
+      , isActive = False
       }
     , Cmd.none
     )

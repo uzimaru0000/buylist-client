@@ -7,6 +7,7 @@ type alias Model =
     { email : String
     , pass : String
     , signInFail : Maybe Bool
+    , errorMessage : String
     }
 
 
@@ -14,7 +15,7 @@ type Msg
     = EmailInput String
     | PassInput String
     | SignIn
-    | SignInResult
+    | SignInResult String
 
 
 init : Model
@@ -22,4 +23,5 @@ init =
     { email = ""
     , pass = ""
     , signInFail = Nothing
+    , errorMessage = ""
     }

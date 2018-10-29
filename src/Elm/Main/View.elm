@@ -22,23 +22,29 @@ view model =
         Home ->
             { title = "Home"
             , body =
-                [ generalNavbar False
+                [ generalNavbar model.isActive
                     [ B.navbarItem False
                         []
-                        [ B.buttons B.Left
-                            []
-                            [ a
-                                [ BT.textColor BT.BlackLighter
-                                , class "button is-warning"
-                                , href "/signup"
+                        [ if model.user == Nothing then
+                            B.buttons B.Left
+                                []
+                                [ a
+                                    [ BT.textColor BT.BlackLighter
+                                    , class "button is-warning"
+                                    , href "/signup"
+                                    ]
+                                    [ text "SignUp" ]
+                                , a
+                                    [ class "button is-primary"
+                                    , href "/signin"
+                                    ]
+                                    [ text "SignIn" ]
                                 ]
-                                [ text "SignUp" ]
-                            , a
-                                [ class "button is-primary"
-                                , href "/signin"
-                                ]
-                                [ text "SignIn" ]
-                            ]
+
+                          else
+                            B.button { buttonModifiers | color = B.Warning }
+                                [ onClick SignOut ]
+                                [ text "SignOut" ]
                         ]
                     ]
                 , Home.view
@@ -49,20 +55,18 @@ view model =
         SignIn subModel ->
             { title = "SignIn"
             , body =
-                [ generalNavbar False []
+                [ generalNavbar model.isActive []
                 , SignIn.view subModel
                     |> Html.map SignInMsg
-                , generalFooter
                 ]
             }
 
         SignUp subModel ->
             { title = "SignUp"
             , body =
-                [ generalNavbar False []
+                [ generalNavbar model.isActive []
                 , SignUp.view subModel
                     |> Html.map SignUpMsg
-                , generalFooter
                 ]
             }
 
@@ -72,24 +76,33 @@ view model =
             }
 
 
-generalNavbar : IsActive -> List (Html msg) -> Html msg
+generalNavbar : IsActive -> List (Html Msg) -> Html Msg
 generalNavbar isActive items =
     B.navbar { navbarModifiers | color = B.Primary }
         []
         [ B.navbarBrand []
-            (B.navbarBurger isActive
-                []
-                [ span [] []
-                , span [] []
-                , span [] []
-                ]
+            (if List.length items > 0 then
+                div
+                    [ onClick ToggleBurger
+                    , classList
+                        [ ( "navbar-burger", True )
+                        , ( "is-active", isActive )
+                        ]
+                    ]
+                    [ span [] []
+                    , span [] []
+                    , span [] []
+                    ]
+
+             else
+                text ""
             )
             [ B.navbarItemLink False
                 [ href "/" ]
                 [ text "Pantry" ]
             ]
         , B.navbarMenu isActive
-            []
+            [ class "has-background-primary" ]
             [ B.navbarEnd []
                 items
             ]

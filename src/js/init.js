@@ -41,11 +41,16 @@ const appPorting = app => {
 
         firebase.auth().signInWithEmailAndPassword(email, pass)
             .then(res => {
-                app.ports.getUser.send(res.user);
+                if (res.user.emailVerified) {
+                    app.ports.getUser.send(res.user);
+                } else {
+                    app.ports.message.send("Not Verified.");
+                    firebase.auth().currentUser.sendEmailVerification();
+                    firebase.auth().signOut();
+                }
             })
             .catch(err => {
-                app.ports.message.send("Error");
-                console.log("signUp : " + err);
+                app.ports.message.send(err.message);
             });
     });
 
@@ -54,7 +59,6 @@ const appPorting = app => {
             .then(() => {
                 console.log("signOut");
                 app.ports.successSignOut.send(null);
-                console.log(app);
             });
     });
 }

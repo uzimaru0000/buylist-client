@@ -26,7 +26,7 @@ signIn model =
     B.columns { columnsModifiers | centered = True }
         [ BT.textCentered ]
         [ B.column { columnModifiers | widths = widths }
-            []
+            [ style "margin" "64px 0 64px" ]
             [ B.box
                 []
                 [ B.image (B.OneByOne B.X128)
@@ -44,7 +44,7 @@ signIn model =
                         [ B.controlLabel
                             [ BT.textColor BT.Danger
                             ]
-                            [ text "email or password is incorrect."
+                            [ text model.errorMessage
                             ]
                         ]
 
@@ -60,7 +60,8 @@ signIn model =
                         }
                         []
                         [ onInput EmailInput
-                        , placeholder "Your Email"
+                        , placeholder "Email"
+                        , value model.email
                         ]
                         []
                     ]
@@ -74,7 +75,8 @@ signIn model =
                         }
                         []
                         [ onInput PassInput
-                        , placeholder "Your Password"
+                        , placeholder "Password"
+                        , value model.pass
                         ]
                         []
                     ]
@@ -109,8 +111,8 @@ inputState maybeFail =
 
 widths : B.Devices (Maybe B.Width)
 widths =
-    { mobile = Just B.Width5
-    , tablet = Just B.Width5
+    { mobile = Just B.Auto
+    , tablet = Just B.Auto
     , desktop = Just B.Width5
     , fullHD = Just B.Width5
     , widescreen = Just B.Width5

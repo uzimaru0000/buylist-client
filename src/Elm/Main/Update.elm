@@ -36,9 +36,12 @@ update msg model =
                 ( state, cmd ) =
                     pageInit model <| Routing.parseUrl url
             in
-            ( { model | pageState = state }
+            ( { model | pageState = state, isActive = False }
             , cmd
             )
+
+        ToggleBurger ->
+            ( { model | isActive = not model.isActive }, Cmd.none )
 
         SignOut ->
             ( model, Firebase.signOut () )
