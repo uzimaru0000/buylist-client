@@ -1,12 +1,6 @@
-# Elm-Template
+# Pantry-Client
 
-## Initialize
-```
-$ npm i
-$ elm-package install
-```
+[![CircleCI](https://circleci.com/gh/uzimaru0000/buylist-client/tree/master.svg?style=svg)](https://circleci.com/gh/uzimaru0000/buylist-client/tree/master)
 
-## Development
-```
-$ npm start
-```
+## Discription
+Foods manegement, recipe recomend and create shopping list.
