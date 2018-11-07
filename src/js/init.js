@@ -8,6 +8,7 @@ export default () => {
     let flag = false;
     return x => {
         if (!flag) {
+            console.log(x);
             const main = document.getElementById('main');
             const app = Elm.Main.init({
                 node: main,

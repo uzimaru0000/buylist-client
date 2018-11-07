@@ -27,8 +27,25 @@ homeHero =
         []
         [ B.heroBody []
             [ B.image B.Natural
-                []
+                [ B.displayByDevice
+                    { mobile = B.Hidden
+                    , tablet = B.Hidden
+                    , desktop = B.Block
+                    , widescreen = B.Block
+                    , fullHD = B.Block
+                    }
+                ]
                 [ img [ src "assets/Logo/facebook_cover_photo_2.png" ] [] ]
+            , B.image B.Natural
+                [ B.displayByDevice
+                    { mobile = B.Block
+                    , tablet = B.Block
+                    , desktop = B.Hidden
+                    , widescreen = B.Hidden
+                    , fullHD = B.Hidden
+                    }
+                ]
+                [ img [ src "assets/Logo/facebook_cover_photo_1.png" ] [] ]
             ]
         ]
 
@@ -52,7 +69,7 @@ homeContent =
                 }
               ]
                 |> List.map infoCard
-                |> B.columns columnsModifiers []
+                |> B.columns { columnsModifiers | multiline = True, centered = True } []
             ]
         ]
 

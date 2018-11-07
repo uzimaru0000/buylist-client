@@ -6,6 +6,7 @@ import Bulma.Elements as B exposing (buttonModifiers)
 import Bulma.Layout as B
 import Bulma.Modifiers as B
 import Bulma.Modifiers.Typography as BT
+import Data.User as User
 import Home.View as Home
 import Html exposing (..)
 import Html.Attributes exposing (..)
@@ -23,30 +24,36 @@ view model =
             { title = "Home"
             , body =
                 [ generalNavbar model.isActive
-                    [ B.navbarItem False
-                        []
-                        [ if model.user == Nothing then
-                            B.buttons B.Left
+                    (case model.user of
+                        Just user ->
+                            [ B.hoverableNavbarItemDropdown
+                                B.Down
                                 []
-                                [ a
-                                    [ BT.textColor BT.BlackLighter
-                                    , class "button is-warning"
-                                    , href "/signup"
-                                    ]
-                                    [ text "SignUp" ]
-                                , a
-                                    [ class "button is-primary"
-                                    , href "/signin"
-                                    ]
-                                    [ text "SignIn" ]
+                                (B.navbarItemLink False [] [ User.view user NoOp ])
+                                [ B.navbarDropdown False B.Right [] []
                                 ]
+                            ]
 
-                          else
-                            B.button { buttonModifiers | color = B.Warning }
-                                [ onClick SignOut ]
-                                [ text "SignOut" ]
-                        ]
-                    ]
+                        Nothing ->
+                            [ B.navbarItem False
+                                []
+                                [ B.buttons B.Left
+                                    []
+                                    [ a
+                                        [ BT.textColor BT.BlackLighter
+                                        , class "button is-warning"
+                                        , href "/signup"
+                                        ]
+                                        [ text "SignUp" ]
+                                    , a
+                                        [ class "button is-primary"
+                                        , href "/signin"
+                                        ]
+                                        [ text "SignIn" ]
+                                    ]
+                                ]
+                            ]
+                    )
                 , Home.view
                 , generalFooter
                 ]
