@@ -1,5 +1,7 @@
 module Main.Update exposing (update)
 
+import Box.Model as Box
+import Box.Update as Box
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation as Nav
 import Data.User as User
@@ -12,6 +14,8 @@ import SignIn.Model as SignIn
 import SignIn.Update as SignIn
 import SignUp.Model as SignUp
 import SignUp.Update as SignUp
+import Task
+import Time
 import Url
 import Util exposing (Updater, alert)
 
@@ -58,6 +62,9 @@ update msg model =
         SuccessSignOut _ ->
             ( { model | user = Nothing }, Nav.pushUrl model.key "/signin" )
 
+        BoxInit zone ->
+            ( { model | pageState = Box.init zone |> Box |> Loaded }, Cmd.none )
+
         _ ->
             pageUpdate (getPage model.pageState) msg model
 
@@ -70,6 +77,9 @@ pageUpdate page msg model =
 
         ( SignUpMsg subMsg, SignUp subModel ) ->
             pageUpdater model SignUp SignUpMsg subMsg subModel SignUp.update
+
+        ( BoxMsg subMsg, Box subModel ) ->
+            pageUpdater model Box BoxMsg subMsg subModel Box.update
 
         _ ->
             ( model, Cmd.none )
@@ -104,6 +114,9 @@ pageInit model route =
 
         Routing.SignIn ->
             ( Loaded <| SignIn SignIn.init, Cmd.none )
+
+        Routing.Box ->
+            ( Transition <| getPage model.pageState, Task.perform BoxInit Time.here )
 
         Routing.NotFound ->
             ( Loaded NotFound, Cmd.none )

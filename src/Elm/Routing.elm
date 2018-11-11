@@ -8,6 +8,7 @@ type Route
     = Home
     | SignUp
     | SignIn
+    | Box
     | NotFound
 
 
@@ -16,6 +17,7 @@ routing =
     Url.oneOf
         [ Url.map SignUp (Url.s "signup")
         , Url.map SignIn (Url.s "signin")
+        , Url.map Box (Url.s "pantry")
         , Url.map Home Url.top
         ]
 

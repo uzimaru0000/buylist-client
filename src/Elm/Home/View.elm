@@ -17,6 +17,7 @@ view =
         ]
         [ homeHero
         , homeContent
+        , a [ href "/pantry" ] [ text "Pantry" ]
         , homeFooter
         ]
 

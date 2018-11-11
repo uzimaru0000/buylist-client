@@ -1,5 +1,6 @@
 module Main.View exposing (view)
 
+import Box.View as Box
 import Browser exposing (Document)
 import Bulma.Components as B exposing (IsActive, navbarModifiers)
 import Bulma.Elements as B exposing (buttonModifiers)
@@ -74,6 +75,15 @@ view model =
                 [ generalNavbar model.isActive []
                 , SignUp.view subModel
                     |> Html.map SignUpMsg
+                ]
+            }
+
+        Box subModel ->
+            { title = "Pantry"
+            , body =
+                [ generalNavbar model.isActive []
+                , Box.view subModel
+                    |> Html.map BoxMsg
                 ]
             }
 

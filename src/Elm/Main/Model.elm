@@ -1,5 +1,6 @@
 module Main.Model exposing (Model, Msg(..), Page(..), PageState(..), getPage, init)
 
+import Box.Model as Box
 import Browser exposing (UrlRequest(..))
 import Browser.Navigation exposing (Key)
 import Bulma.Components exposing (IsActive)
@@ -9,6 +10,8 @@ import Http exposing (Error)
 import Json.Decode as Decode
 import SignIn.Model as SignIn
 import SignUp.Model as SignUp
+import Task
+import Time
 import Url exposing (Url)
 import Url.Parser as Url exposing (Parser)
 import Util exposing (..)
@@ -32,12 +35,15 @@ type Msg
     | SuccessSignOut ()
     | SignInMsg SignIn.Msg
     | SignUpMsg SignUp.Msg
+    | BoxInit Time.Zone
+    | BoxMsg Box.Msg
 
 
 type Page
     = Home
     | SignUp SignUp.Model
     | SignIn SignIn.Model
+    | Box Box.Model
     | NotFound
 
 
@@ -59,7 +65,8 @@ init value url key =
       , user = user
       , isActive = False
       }
-    , Cmd.none
+    , Task.succeed url
+        |> Task.perform UrlChanged
     )
 
 
