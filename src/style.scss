@@ -30,3 +30,14 @@ $body-background-color: $base-color;
     box-shadow: 0 0 5px 0 rgba(0, 0, 0, 0.5);
     margin: -85px auto 16px;
 }
+
+#quagga-display {
+    position: relative;
+    canvas {
+        position: absolute;
+        top: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+    }
+}

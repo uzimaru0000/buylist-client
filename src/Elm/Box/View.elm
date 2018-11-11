@@ -42,7 +42,7 @@ view model =
             []
           <|
             List.map (foodItemView model.timeZone) model.foods
-        , addModal model.modalToggle
+        , addModal model
         ]
 
 
@@ -100,33 +100,15 @@ expFormatter =
         ]
 
 
-addModal : Bool -> Html Msg
-addModal isOpen =
-    B.modal isOpen
+addModal : Model -> Html Msg
+addModal { modalToggle, addingFood } =
+    B.modal modalToggle
         []
         [ B.modalBackground [ onClick <| ToggleModal False ] []
         , B.modalCard []
             [ B.modalCardHead [] [ B.modalCardTitle [] [ text "食材の追加" ] ]
             , B.modalCardBody []
-                [ B.columns
-                    { columnsModifiers
-                        | centered = True
-                        , multiline = True
-                    }
-                    []
-                    [ B.column
-                        columnModifiers
-                        [ class "is-12" ]
-                        [ text "食材を追加します" ]
-                    , B.column
-                        { columnModifiers | widths = widthSetter <| Just Width8 }
-                        [ style "background" "black"
-                        , style "height" "320px"
-                        , id "quagga-display"
-                        ]
-                        []
-                    ]
-                ]
+                [ modalCardContent addingFood ]
             , B.modalCardFoot [ B.display Block ]
                 [ B.buttons Right
                     []
@@ -141,6 +123,41 @@ addModal isOpen =
             ]
         , B.modalClose B.Large [ onClick <| ToggleModal False ] []
         ]
+
+
+modalCardContent : Maybe Food -> Html Msg
+modalCardContent maybeFood =
+    case maybeFood of
+        Just food ->
+            B.section B.NotSpaced
+                []
+                [ B.image (B.OneByOne B.X128)
+                    []
+                    [ img
+                        [ food.imageURL |> Maybe.withDefault "" |> src ]
+                        []
+                    ]
+                , p [] [ text food.name ]
+                ]
+
+        Nothing ->
+            B.columns
+                { columnsModifiers
+                    | centered = True
+                    , multiline = True
+                }
+                []
+                [ B.column
+                    columnModifiers
+                    [ class "is-12" ]
+                    [ text "食材を追加します" ]
+                , B.column
+                    { columnModifiers | widths = widthSetter <| Just Width8 }
+                    [ style "height" "320px"
+                    , id "quagga-display"
+                    ]
+                    []
+                ]
 
 
 showTouchOnly : Devices Display

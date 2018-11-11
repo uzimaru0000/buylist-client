@@ -1,4 +1,4 @@
-module Data.Food exposing (Food)
+module Data.Food exposing (Food, decoder)
 
 import Json.Decode as JD
 import Time exposing (..)
@@ -7,7 +7,7 @@ import Time exposing (..)
 type alias Food =
     { name : String
     , exp : Posix
-    , code : Maybe Int
+    , imageURL : Maybe String
     , amount : Int
     }
 
@@ -17,5 +17,5 @@ decoder =
     JD.map4 Food
         (JD.field "name" JD.string)
         (JD.field "exp" <| JD.map millisToPosix JD.int)
-        (JD.field "code" (JD.maybe JD.int))
+        (JD.field "imageURL" <| JD.nullable JD.string)
         (JD.field "amount" JD.int)

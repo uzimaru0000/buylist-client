@@ -1,5 +1,6 @@
 module Main.Sub exposing (subscriptions)
 
+import Box.Sub as Box
 import Firebase
 import Main.Model exposing (..)
 import SignIn.Sub as SignIn
@@ -16,6 +17,10 @@ subscriptions model =
         SignIn subModel ->
             SignIn.subscriptions subModel
                 |> Sub.map SignInMsg
+
+        Box subModel ->
+            Box.subscriptions subModel
+                |> Sub.map BoxMsg
 
         _ ->
             Sub.none
