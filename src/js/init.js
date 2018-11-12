@@ -23,6 +23,8 @@ export default () => {
 };
 
 const appPorting = app => {
+    let isQuaggaStart = false;
+
     app.ports.createUser.subscribe(data => {
         const email = data[0];
         const pass = data[1];
@@ -67,10 +69,18 @@ const appPorting = app => {
 
     app.ports.readCode.subscribe(_ => {
         barcode.init();
+        isQuaggaStart = true;
         barcode.onProcessed(result => {
             const ctx = Quagga.canvas.ctx.overlay;
             const canvas = Quagga.canvas.dom.overlay;
             ctx.clearRect(0, 0, canvas.width, canvas.height);
+            ctx.fillStyle = "rgba(0, 0, 0, 0.5)";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            ctx.clearRect(canvas.width * 0.1,
+                          canvas.height * 0.1,
+                          canvas.width * 0.8,
+                          canvas.height * 0.8
+                      );
 
             if (!result) return;
 
@@ -95,14 +105,18 @@ const appPorting = app => {
             return result => {
                 const code = result.codeResult.code;
                 if (currentCode !== code) {
-                    app.ports.getCode.send(parseInt(code));
                     Quagga.stop();
+                    app.ports.getCode.send(parseInt(code));
+                    currentCode = code;
                 }
             }
         })());
     });
 
     app.ports.stopReadCode.subscribe(_ => {
-        Quagga.stop();
+        if (isQuaggaStart) {
+            Quagga.stop();
+            isQuaggaStart = false;
+        }
     });
 }

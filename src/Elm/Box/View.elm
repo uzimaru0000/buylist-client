@@ -11,9 +11,10 @@ import Bulma.Modifiers.Typography as BT
 import Data.Food exposing (Food)
 import DateFormat as DF
 import Html exposing (..)
-import Html.Attributes exposing (..)
+import Html.Attributes as Attr exposing (..)
 import Html.Events exposing (..)
 import Time exposing (..)
+import Util
 
 
 view : Model -> Html Msg
@@ -58,21 +59,35 @@ foodItemView timeZone food =
             [ B.cardHeader []
                 [ B.easyCardTitle [] food.name
                 ]
-            , B.cardContent []
-                [ cardContentText "個数" <| String.fromInt food.amount
-                , cardContentText "賞味期限" (expFormatter timeZone food.exp)
+            , B.cardContent [ onClick <| UpdateFood food ]
+                [ B.media []
+                    [ B.mediaLeft []
+                        [ case food.imageURL of
+                            Just url ->
+                                B.image (B.OneByOne B.X96)
+                                    []
+                                    [ img [ src url ] [] ]
+
+                            Nothing ->
+                                text ""
+                        ]
+                    , B.mediaContent []
+                        [ cardContentText "個数" <| String.fromInt food.amount
+                        , cardContentText "賞味期限" (expFormatter timeZone food.exp)
+                        ]
+                    ]
                 ]
             , B.cardFooter []
                 [ B.cardFooterItem
                     [ B.display B.Block ]
                     [ B.buttons B.Right
-                        [ B.fullWidth ]
+                        []
                         [ B.button
                             { buttonModifiers
                                 | color = B.Danger
                                 , outlined = True
                             }
-                            []
+                            [ onClick <| DeleteFood food ]
                             [ text "Delete" ]
                         ]
                     ]
@@ -101,19 +116,40 @@ expFormatter =
 
 
 addModal : Model -> Html Msg
-addModal { modalToggle, addingFood } =
+addModal ({ modalToggle, addingFood, currentMode } as model) =
     B.modal modalToggle
         []
         [ B.modalBackground [ onClick <| ToggleModal False ] []
         , B.modalCard []
             [ B.modalCardHead [] [ B.modalCardTitle [] [ text "食材の追加" ] ]
             , B.modalCardBody []
-                [ modalCardContent addingFood ]
+                [ B.tabs B.tabsModifiers
+                    []
+                    []
+                    [ B.tab (currentMode == ScanCode)
+                        []
+                        [ onClick <| ChangeMode ScanCode ]
+                        [ text "読み取り" ]
+                    , B.tab (currentMode == InputData)
+                        []
+                        [ onClick <| ChangeMode InputData ]
+                        [ text "入力" ]
+                    ]
+                , case currentMode of
+                    ScanCode ->
+                        scanView
+
+                    InputData ->
+                        inputView model
+
+                    _ ->
+                        text ""
+                ]
             , B.modalCardFoot [ B.display Block ]
                 [ B.buttons Right
                     []
                     [ B.button { buttonModifiers | color = B.Success }
-                        []
+                        [ onClick AddFood ]
                         [ text "追加" ]
                     , B.button { buttonModifiers | color = B.Light }
                         [ onClick <| ToggleModal False ]
@@ -125,39 +161,98 @@ addModal { modalToggle, addingFood } =
         ]
 
 
-modalCardContent : Maybe Food -> Html Msg
-modalCardContent maybeFood =
-    case maybeFood of
-        Just food ->
-            B.section B.NotSpaced
-                []
-                [ B.image (B.OneByOne B.X128)
-                    []
-                    [ img
-                        [ food.imageURL |> Maybe.withDefault "" |> src ]
-                        []
-                    ]
-                , p [] [ text food.name ]
-                ]
+scanView : Html Msg
+scanView =
+    B.columns
+        { columnsModifiers
+            | centered = True
+            , multiline = True
+        }
+        []
+        [ B.column
+            columnModifiers
+            [ class "is-12" ]
+            [ text "食材を追加します" ]
+        , B.column
+            { columnModifiers | widths = widthSetter <| Just Width8 }
+            [ style "height" "320px"
+            , id "quagga-display"
+            ]
+            []
+        ]
 
-        Nothing ->
-            B.columns
-                { columnsModifiers
-                    | centered = True
-                    , multiline = True
-                }
-                []
-                [ B.column
-                    columnModifiers
-                    [ class "is-12" ]
-                    [ text "食材を追加します" ]
-                , B.column
-                    { columnModifiers | widths = widthSetter <| Just Width8 }
-                    [ style "height" "320px"
-                    , id "quagga-display"
-                    ]
+
+inputView : Model -> Html Msg
+inputView { timeZone, addingFood } =
+    B.field []
+        [ case addingFood.imageURL of
+            Just url ->
+                B.image (B.OneByOne B.X128)
                     []
+                    [ img [ src url ] [] ]
+
+            Nothing ->
+                text ""
+        , B.controlLabel [] [ text "名前" ]
+        , B.controlInput B.controlInputModifiers
+            []
+            [ value addingFood.name
+            , onInput <| ChangeValue FoodName
+            ]
+            []
+        , B.controlLabel [] [ text "賞味期限" ]
+        , B.connectedFields B.Left
+            []
+            [ B.controlInput B.controlInputModifiers
+                []
+                [ type_ "number"
+                , Attr.min "1970"
+                , Attr.max "2030"
+                , placeholder "年"
+                , onInput <| ChangeValue Year
+                , addingFood.exp
+                    |> Time.toYear timeZone
+                    |> String.fromInt
+                    |> value
                 ]
+                []
+            , B.controlInput B.controlInputModifiers
+                []
+                [ type_ "number"
+                , Attr.min "1"
+                , Attr.max "12"
+                , placeholder "月"
+                , onInput <| ChangeValue Month
+                , addingFood.exp
+                    |> Time.toMonth timeZone
+                    |> Util.monthToInt
+                    |> String.fromInt
+                    |> value
+                ]
+                []
+            , B.controlInput B.controlInputModifiers
+                []
+                [ type_ "number"
+                , Attr.min "1"
+                , Attr.max "31"
+                , placeholder "日"
+                , onInput <| ChangeValue Day
+                , addingFood.exp
+                    |> Time.toDay timeZone
+                    |> String.fromInt
+                    |> value
+                ]
+                []
+            ]
+        , B.controlLabel [] [ text "個数" ]
+        , B.controlInput B.controlInputModifiers
+            []
+            [ type_ "number"
+            , onInput <| ChangeValue Amount
+            , value <| String.fromInt addingFood.amount
+            ]
+            []
+        ]
 
 
 showTouchOnly : Devices Display

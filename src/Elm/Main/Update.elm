@@ -32,7 +32,7 @@ update msg model =
 
                 External url ->
                     ( model
-                    , Nav.load url
+                    , Cmd.none
                     )
 
         UrlChanged url ->

@@ -13,10 +13,16 @@ export default {
                     facingMode: "environment",
                     aspectRatio: { min: 1, max: 100 }
                 },
+                area: {
+                    top: "10%",
+                    right: "10%",
+                    left: "10%",
+                    bottom: "10%"
+                },
                 target: display,
                 numOfWorker: navigator.hardwareConcurrency,
                 locator: {
-                    patchSize: "medium",
+                    patchSize: "small",
                     halfSample: true
                 }
             },
