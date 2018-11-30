@@ -7,7 +7,7 @@ import Time exposing (..)
 
 type alias Food =
     { name : String
-    , exp : Posix
+    , exp : Maybe Posix
     , imageURL : Maybe String
     , amount : Int
     , code : Maybe Int
@@ -17,7 +17,7 @@ type alias Food =
 zero : Food
 zero =
     { name = ""
-    , exp = millisToPosix 0
+    , exp = Nothing
     , imageURL = Nothing
     , amount = 1
     , code = Nothing
@@ -28,10 +28,10 @@ decoder : JD.Decoder Food
 decoder =
     JD.map5 Food
         (JD.field "name" JD.string)
-        (JD.field "exp" <| JD.map millisToPosix JD.int)
-        (JD.field "imageURL" <| JD.nullable JD.string)
+        (JD.field "exp" <| JD.maybe <| JD.map millisToPosix JD.int)
+        (JD.field "imageURL" <| JD.maybe JD.string)
         (JD.field "amount" JD.int)
-        (JD.nullable <| JD.field "code" JD.int)
+        (JD.maybe <| JD.field "code" JD.int)
 
 
 

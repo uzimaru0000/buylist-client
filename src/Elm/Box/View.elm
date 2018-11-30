@@ -73,7 +73,12 @@ foodItemView timeZone food =
                         ]
                     , B.mediaContent []
                         [ cardContentText "個数" <| String.fromInt food.amount
-                        , cardContentText "賞味期限" (expFormatter timeZone food.exp)
+                        , cardContentText
+                            "賞味期限"
+                            (food.exp
+                                |> Maybe.map (expFormatter timeZone)
+                                |> Maybe.withDefault ""
+                            )
                         ]
                     ]
                 ]
@@ -130,7 +135,7 @@ addModal ({ modalToggle, addingFood, currentMode } as model) =
                         []
                         [ onClick <| ChangeMode ScanCode ]
                         [ text "読み取り" ]
-                    , B.tab (currentMode == InputData)
+                    , B.tab (currentMode /= ScanCode)
                         []
                         [ onClick <| ChangeMode InputData ]
                         [ text "入力" ]
@@ -142,15 +147,21 @@ addModal ({ modalToggle, addingFood, currentMode } as model) =
                     InputData ->
                         inputView model
 
-                    _ ->
-                        text ""
+                    UpdateData ->
+                        inputView model
                 ]
             , B.modalCardFoot [ B.display Block ]
                 [ B.buttons Right
                     []
                     [ B.button { buttonModifiers | color = B.Success }
                         [ onClick AddFood ]
-                        [ text "追加" ]
+                        [ text <|
+                            if currentMode == UpdateData then
+                                "更新"
+
+                            else
+                                "追加"
+                        ]
                     , B.button { buttonModifiers | color = B.Light }
                         [ onClick <| ToggleModal False ]
                         [ text "キャンセル" ]
@@ -183,7 +194,7 @@ scanView =
 
 
 inputView : Model -> Html Msg
-inputView { timeZone, addingFood } =
+inputView ({ timeZone, addingFood } as model) =
     B.field []
         [ case addingFood.imageURL of
             Just url ->
@@ -210,10 +221,7 @@ inputView { timeZone, addingFood } =
                 , Attr.max "2030"
                 , placeholder "年"
                 , onInput <| ChangeValue Year
-                , addingFood.exp
-                    |> Time.toYear timeZone
-                    |> String.fromInt
-                    |> value
+                , value model.year
                 ]
                 []
             , B.controlInput B.controlInputModifiers
@@ -223,11 +231,7 @@ inputView { timeZone, addingFood } =
                 , Attr.max "12"
                 , placeholder "月"
                 , onInput <| ChangeValue Month
-                , addingFood.exp
-                    |> Time.toMonth timeZone
-                    |> Util.monthToInt
-                    |> String.fromInt
-                    |> value
+                , value model.month
                 ]
                 []
             , B.controlInput B.controlInputModifiers
@@ -237,10 +241,7 @@ inputView { timeZone, addingFood } =
                 , Attr.max "31"
                 , placeholder "日"
                 , onInput <| ChangeValue Day
-                , addingFood.exp
-                    |> Time.toDay timeZone
-                    |> String.fromInt
-                    |> value
+                , value model.day
                 ]
                 []
             ]
@@ -248,6 +249,7 @@ inputView { timeZone, addingFood } =
         , B.controlInput B.controlInputModifiers
             []
             [ type_ "number"
+            , Attr.min "1"
             , onInput <| ChangeValue Amount
             , value <| String.fromInt addingFood.amount
             ]
